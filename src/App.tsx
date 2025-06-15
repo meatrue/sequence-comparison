@@ -1,20 +1,26 @@
-import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
+import { Card, CssBaseline, Stack, ThemeProvider, Typography } from '@mui/material';
 
-import { ComparsionForm } from './components/ComparsionForm';
+import { ComparisonForm } from '@/components/comparison-form';
+import { Layout } from '@/components/ui/layout';
 
-const theme = createTheme({
-  typography: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-  },
-});
+import { theme } from './theme';
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline /> 
-      <ComparsionForm />
+      <CssBaseline />
+      <Layout>
+        <Stack spacing={3}>
+          <Typography variant="h5" component="h1">
+            Визуализация выравнивания аминокислотных последовательностей
+          </Typography>
+          <Card sx={{ p: 5 }}>
+            <ComparisonForm />
+          </Card>
+        </Stack>
+      </Layout>
     </ThemeProvider>
-  )
+  );
 }
 
-export default App
+export default App;
