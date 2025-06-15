@@ -3,7 +3,7 @@ import { Card, CssBaseline, Stack, ThemeProvider, Typography } from '@mui/materi
 import { ComparisonForm } from '@/components/comparison-form';
 import { Layout } from '@/components/ui/layout';
 
-import { theme } from './theme';
+import { theme } from '../theme';
 
 function App() {
   return (
