@@ -1,11 +1,12 @@
 import { Stack, Typography, TextField, Button } from '@mui/material';
 import { Formik, Form } from 'formik';
-import { useMemo } from 'react';
+import { useMemo, useState, type ChangeEvent } from 'react';
 
 import type { IComparisonFormFields } from '@/types/forms';
 import { getComparisonFormValidationSchema } from '@/utility/validation';
 
 import { StyledForm, InputsContainer } from './comparison-form.styled';
+import { ComparisonResult } from './comparison-result';
 
 const initialValues: IComparisonFormFields = {
   firstSequence: '',
@@ -17,8 +18,21 @@ export const ComparisonForm = () => {
     return getComparisonFormValidationSchema();
   }, []);
 
-  const handleSubmit = (fields: IComparisonFormFields) => {
+  const [sequences, setSequences] = useState<IComparisonFormFields | null>(null);
 
+  const handleSubmit = (fields: IComparisonFormFields, { resetForm }: { resetForm: () => void }) => {
+    setSequences(fields);
+    resetForm();
+  };
+
+  const handleFieldChange = (
+    fieldName: keyof IComparisonFormFields,
+    setFieldValue: (field: string, value: string) => void
+  ) => {
+    return (event: ChangeEvent<HTMLInputElement>) => {
+      const uppercaseValue = event.target.value.toUpperCase();
+      setFieldValue(fieldName, uppercaseValue);
+    };
   };
 
   return (
@@ -32,7 +46,15 @@ export const ComparisonForm = () => {
         validationSchema={comparisonFormValidationSchema}
         onSubmit={handleSubmit}
       >
-        {({ values, errors, touched, handleChange, handleBlur, isValid, dirty }) => (
+        {({
+          values,
+          errors,
+          touched,
+          setFieldValue,
+          handleBlur,
+          isValid,
+          dirty
+        }) => (
           <Form>
             <StyledForm>
               <InputsContainer>
@@ -42,7 +64,7 @@ export const ComparisonForm = () => {
                   label="Первая последовательность"
                   variant="outlined"
                   value={values.firstSequence}
-                  onChange={handleChange}
+                  onChange={handleFieldChange('firstSequence', setFieldValue)}
                   onBlur={handleBlur}
                   error={touched.firstSequence && Boolean(errors.firstSequence)}
                   helperText={touched.firstSequence && errors.firstSequence}
@@ -54,7 +76,7 @@ export const ComparisonForm = () => {
                   label="Вторая последовательность"
                   variant="outlined"
                   value={values.secondSequence}
-                  onChange={handleChange}
+                  onChange={handleFieldChange('secondSequence', setFieldValue)}
                   onBlur={handleBlur}
                   error={touched.secondSequence && Boolean(errors.secondSequence)}
                   helperText={touched.secondSequence && errors.secondSequence}
@@ -73,6 +95,8 @@ export const ComparisonForm = () => {
               >
                 Выровнять
               </Button>
+
+              {sequences && <ComparisonResult result={sequences} />}
             </StyledForm>
           </Form>
         )}
